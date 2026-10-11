@@ -1,0 +1,24 @@
+# OS and editor noise
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
+
+# Obsidian per-machine state (share .obsidian/app.json only if you want to)
+.obsidian/workspace*.json
+.obsidian/cache
+
+# Never commit these
+.env
+.env.*
+*.pem
+*.key
+credentials*.json
+secrets*
+
+# Large or sensitive raw dumps: keep the folder, ignore the contents by default
+00-inbox-raw-data/*
+!00-inbox-raw-data/.gitkeep
+!00-inbox-raw-data/README.md
+!00-inbox-raw-data/CLAUDE.md

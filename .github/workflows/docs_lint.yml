@@ -1,0 +1,42 @@
+name: Docs lint
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  markdown-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Lint Markdown
+        uses: DavidAnson/markdownlint-cli2-action@v16
+        with:
+          globs: |
+            **/*.md
+            !node_modules
+
+  link-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check internal links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --no-progress --include-fragments './**/*.md'
+          fail: true
+
+  sensitive-pattern-scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan for obvious secrets
+        run: |
+          if grep -rEn --include='*.md' --exclude-dir=.git \
+            -e 'AKIA[0-9A-Z]{16}' \
+            -e '-----BEGIN (RSA |EC )?PRIVATE KEY-----' \
+            -e '\b[0-9]{3}-[0-9]{2}-[0-9]{4}\b' .; then
+            echo "Possible sensitive data found. Review the matches above."
+            exit 1
+          fi
